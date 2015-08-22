@@ -23,6 +23,8 @@ before_install:
 
 install:
   - if [[ $BUILD_GCC ]]; then make install; fi
+  - export CXX="${GCC_INSTALL_PATH}/bin/${GCC_NAME}"
+  - $CXX --version
 
 script:
   - ./run.sh 
