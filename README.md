@@ -12,4 +12,4 @@ The `run.sh` scripts builds each C++ source file located at `tests/` directory. 
 
 ## License
 
-All C++ code examples are published under the MIT License, except explicitly stated otherwise with a License Header at the beginning of the file. The same applies to any script (`run.sh`, `.travis.yml`, etc) on this repository. 
+All C++ code examples are published under the MIT License, except explicitly stated otherwise with a license header at the beginning of the file. The same applies to any script (`run.sh`, `.travis.yml`, etc) within this repository. 
