@@ -29,7 +29,7 @@ before_install:
   - if [[ $BUILD_GCC ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE && cd $GCC_BUILD_TREE; fi
   - if [[ $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
   - if [[ $BUILD_GCC ]]; then mkdir build && cd build; fi
-  - if [[ $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
+  - if [[ $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-multilib --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
   - if [[ $BUILD_GCC ]]; then make -j4; fi
 
 install:
