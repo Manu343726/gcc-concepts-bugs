@@ -13,17 +13,16 @@ cache:
     - $GCC_INSTALL_PATH
 
 before_install:
-  - if [[ -d "$GCC_INSTALL_PATH" ]]; then $BUILD_GCC; fi
-  - if [[ $BUILD_GCC ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE; fi
-  - if [[ $BUILD_GCC ]]; then cd $GCC_BUILD_TREE; fi
+  - if [[ ! -d "$GCC_INSTALL_PATH" ]]; then BUILD_GCC="Please cache, work."; fi
+  - if [[ $BUILD_GCC ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE && cd $GCC_BUILD_TREE; fi
   - if [[ $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
   - if [[ $BUILD_GCC ]]; then mkdir build && cd build; fi
   - if [[ $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
-  - if [[ $BUILD_GCC ]]; then make -j4
+  - if [[ $BUILD_GCC ]]; then make -j4; fi
 
 install:
   - if [[ $BUILD_GCC ]]; then make install; fi
 
-test:
+script:
   - ./run.sh 
 
