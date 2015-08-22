@@ -1,0 +1,29 @@
+language: c++
+
+variables:
+  - GCC_INSTALL_PATH="${HOME}/gcc-concepts"
+  - GCC_BUILD_TREE="${HOME}/gcc-concepts-buildtree"
+  - GCC_REPO_URL="https://github.com/gcc-mirror/gcc.git"
+  - CONCEPTS_TS_COMMIT="56c12fd4ba064759724236ad896232603b8797ed"
+  - GCC_SUFFIX="-concepts"
+  - GCC_NAME="gcc${GCC_SUFFIX}"
+
+cache:
+  directories:
+    - $GCC_INSTALL_PATH
+
+before_install:
+  - if [[ -d "$GCC_INSTALL_PATH" ]]; then $BUILD_GCC; fi
+  - if [[ $BUILD_GCC ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE; fi
+  - if [[ $BUILD_GCC ]]; then cd $GCC_BUILD_TREE; fi
+  - if [[ $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
+  - if [[ $BUILD_GCC ]]; then mkdir build && cd build; fi
+  - if [[ $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
+  - if [[ $BUILD_GCC ]]; then make -j4
+
+install:
+  - if [[ $BUILD_GCC ]]; then make install; fi
+
+test:
+  - ./run.sh 
+
