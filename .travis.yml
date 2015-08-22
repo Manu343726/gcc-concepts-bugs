@@ -14,6 +14,15 @@ cache:
   directories:
     - $GCC_INSTALL_PATH
 
+addons:
+  apt:
+    packages:
+      - libmpfr-dev
+      - libgmp3-dev
+      - libmpc-dev
+      - flex
+      - bison
+
 before_install:
   - if [[ ! -f "$GCC_PATH" ]]; then rm -rf $GCC_INSTALL_PATH && rm -rf GCC_BUILD_TREE && BUILD_GCC="Please cache, work."; fi
 
