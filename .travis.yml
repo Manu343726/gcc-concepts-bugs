@@ -27,7 +27,7 @@ addons:
 before_install:
   - if [[ ! -f "$GCC_PATH" ]]; then rm -rf $GCC_INSTALL_PATH && BUILD_GCC="Please cache, work."; fi
 
-  - if [[ $BUILD_GCC && "$(ls -A $GCC_BUILD_TREE)" ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE
+  - if [[ $BUILD_GCC && "$(ls -A $GCC_BUILD_TREE)" ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE; fi
   - if [[ $BUILD_GCC ]]; then cd $GCC_BUILD_TREE; fi
   - if [[ $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
   - if [[ $BUILD_GCC ]]; then mkdir build && cd build; fi
