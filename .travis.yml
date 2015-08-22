@@ -8,13 +8,15 @@ env:
     - CONCEPTS_TS_COMMIT="56c12fd4ba064759724236ad896232603b8797ed"
     - GCC_SUFFIX="-concepts"
     - GCC_NAME="gcc${GCC_SUFFIX}"
+    - GCC_PATH="${GCC_INSTALL_PATH}/bin/${GCC_NAME}"
 
 cache:
   directories:
     - $GCC_INSTALL_PATH
 
 before_install:
-  - if [[ ! -d "$GCC_INSTALL_PATH" ]]; then BUILD_GCC="Please cache, work."; fi
+  - if [[ ! -f "$GCC_PATH" ]]; then rm -rf $GCC_INSTALL_PATH && rm -rf GCC_BUILD_TREE && BUILD_GCC="Please cache, work."; fi
+
   - if [[ $BUILD_GCC ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE && cd $GCC_BUILD_TREE; fi
   - if [[ $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
   - if [[ $BUILD_GCC ]]; then mkdir build && cd build; fi
@@ -22,8 +24,9 @@ before_install:
   - if [[ $BUILD_GCC ]]; then make -j4; fi
 
 install:
+  - if [[ $BUILD_GCC ]]; then mkdir $GCC_INSTALL_PATH -p; fi
   - if [[ $BUILD_GCC ]]; then make install; fi
-  - export CXX="${GCC_INSTALL_PATH}/bin/${GCC_NAME}"
+  - export CXX=$GCC_PATH
   - $CXX --version
 
 script:
