@@ -1,12 +1,13 @@
 language: c++
 
-variables:
-  - GCC_INSTALL_PATH="${HOME}/gcc-concepts"
-  - GCC_BUILD_TREE="${HOME}/gcc-concepts-buildtree"
-  - GCC_REPO_URL="https://github.com/gcc-mirror/gcc.git"
-  - CONCEPTS_TS_COMMIT="56c12fd4ba064759724236ad896232603b8797ed"
-  - GCC_SUFFIX="-concepts"
-  - GCC_NAME="gcc${GCC_SUFFIX}"
+env:
+  global:
+    - GCC_INSTALL_PATH="${HOME}/gcc-concepts"
+    - GCC_BUILD_TREE="${HOME}/gcc-concepts-buildtree"
+    - GCC_REPO_URL="https://github.com/gcc-mirror/gcc.git"
+    - CONCEPTS_TS_COMMIT="56c12fd4ba064759724236ad896232603b8797ed"
+    - GCC_SUFFIX="-concepts"
+    - GCC_NAME="gcc${GCC_SUFFIX}"
 
 cache:
   directories:
