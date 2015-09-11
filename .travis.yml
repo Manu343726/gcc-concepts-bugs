@@ -9,6 +9,8 @@ env:
     - GCC_SUFFIX="-concepts"
     - GCC_NAME="gcc${GCC_SUFFIX}"
     - GCC_PATH="${GCC_INSTALL_PATH}/bin/${GCC_NAME}"
+    - COMMIT_MESSAGE="$(git log --format=%B --no-merges -n 1)"
+    - RUN_BUILD=$(echo "${COMMIT_MESSAGE}" | grep ".*NO_TRAVIS.*")
 
 cache:
   directories:
@@ -25,21 +27,21 @@ addons:
       - bison
 
 before_install:
-  - if [[ ! -f "$GCC_PATH" ]]; then rm -rf $GCC_INSTALL_PATH && BUILD_GCC="Please cache, work."; fi
+  - if [[ $RUN_BUILD && ! -f "$GCC_PATH" ]]; then rm -rf $GCC_INSTALL_PATH && BUILD_GCC="Please cache, work."; fi
 
-  - if [[ $BUILD_GCC && ! "$(ls -A $GCC_BUILD_TREE)" ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE; fi
-  - if [[ $BUILD_GCC ]]; then cd $GCC_BUILD_TREE; fi
-  - if [[ $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
-  - if [[ $BUILD_GCC ]]; then mkdir build && cd build; fi
-  - if [[ $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-multilib --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
-  - if [[ $BUILD_GCC ]]; then $TRAVIS_BUILD_DIR/build_gcc.sh; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC && ! "$(ls -A $GCC_BUILD_TREE)" ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then cd $GCC_BUILD_TREE; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then mkdir build && cd build; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-multilib --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then $TRAVIS_BUILD_DIR/build_gcc.sh; fi
 
 install:
-  - if [[ $BUILD_GCC ]]; then mkdir $GCC_INSTALL_PATH -p; fi
-  - if [[ $BUILD_GCC ]]; then make install; fi
-  - export CXX=$GCC_PATH
-  - $CXX --version
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then mkdir $GCC_INSTALL_PATH -p; fi
+  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then make install; fi
+  - if [[ $RUN_BUILD ]]; then export CXX=$GCC_PATH; fi
+  - if [[ $RUN_BUILD ]]; then $CXX --version; fi
 
 script:
-  - ./run.sh 
+  - if [[ $RUN_BUILD ]]; then ./run.sh; fi
 
