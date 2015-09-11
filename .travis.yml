@@ -10,7 +10,7 @@ env:
     - GCC_NAME="gcc${GCC_SUFFIX}"
     - GCC_PATH="${GCC_INSTALL_PATH}/bin/${GCC_NAME}"
     - COMMIT_MESSAGE="$(git log --format=%B --no-merges -n 1)"
-    - RUN_BUILD='[[ "${COMMIT_MESSAGE}" =~ "NO_TRAVIS" ]]'
+    - RUN_BUILD=$([[ "${COMMIT_MESSAGE}" =~ "NO_TRAVIS" ]]; echo $?)
 
 cache:
   directories:
