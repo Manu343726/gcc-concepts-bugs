@@ -1,47 +1,18 @@
 language: c++
 
+sudo: required
+services:
+  - docker
+
 env:
   global:
-    - GCC_INSTALL_PATH="${HOME}/gcc-concepts"
-    - GCC_BUILD_TREE="${HOME}/gcc-concepts-buildtree"
-    - GCC_REPO_URL="https://github.com/gcc-mirror/gcc.git"
-    - CONCEPTS_TS_COMMIT="56c12fd4ba064759724236ad896232603b8797ed"
-    - GCC_SUFFIX="-concepts"
-    - GCC_NAME="gcc${GCC_SUFFIX}"
-    - GCC_PATH="${GCC_INSTALL_PATH}/bin/${GCC_NAME}"
     - COMMIT_MESSAGE="$(git log --format=%B --no-merges -n 1)"
     - RUN_BUILD="\"${COMMIT_MESSAGE}\" =~ \"NO_TRAVIS\""
 
-cache:
-  directories:
-    - $GCC_INSTALL_PATH
-    - $GCC_BUILD_TREE
-
-addons:
-  apt:
-    packages:
-      - libmpfr-dev
-      - libgmp3-dev
-      - libmpc-dev
-      - flex
-      - bison
-
-before_install:
-  - if [[ $RUN_BUILD && ! -f "$GCC_PATH" ]]; then rm -rf $GCC_INSTALL_PATH && BUILD_GCC="Please cache, work."; fi
-
-  - if [[ $RUN_BUILD && $BUILD_GCC && ! "$(ls -A $GCC_BUILD_TREE)" ]]; then git clone $GCC_REPO_URL $GCC_BUILD_TREE; fi
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then cd $GCC_BUILD_TREE; fi
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then git checkout $CONCEPTS_TS_COMMIT; fi
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then mkdir build && cd build; fi
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then ../configure --prefix=$GCC_INSTALL_PATH --disable-multilib --disable-werror --program-suffix=$GCC_SUFFIX --enable-languages=c++ --enable-version-specific-runtime-libs; fi
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then $TRAVIS_BUILD_DIR/build_gcc.sh; fi
-
 install:
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then mkdir $GCC_INSTALL_PATH -p; fi
-  - if [[ $RUN_BUILD && $BUILD_GCC ]]; then make install; fi
-  - if [[ $RUN_BUILD ]]; then export CXX=$GCC_PATH; fi
-  - if [[ $RUN_BUILD ]]; then $CXX --version; fi
+  - if [[ $RUN_BUILD ]]; then docker pull manu343726/gcc-concepts; fi
+  - if [[ $RUN_BUILD ]]; then ; fi
 
 script:
-  - if [[ $RUN_BUILD ]]; then ./run.sh; fi
+  - if [[ $RUN_BUILD ]]; then docker run manu343726/gcc-concepts /bin/sh -c "git clone https://github.com/Manu343726/gcc-concepts-bugs repo && cd repo && ./run.sh"; fi
 
