@@ -11,7 +11,6 @@ env:
 
 install:
   - if [[ $RUN_BUILD ]]; then docker pull manu343726/gcc-concepts; fi
-  - if [[ $RUN_BUILD ]]; then ; fi
 
 script:
   - if [[ $RUN_BUILD ]]; then docker run manu343726/gcc-concepts /bin/sh -c "git clone https://github.com/Manu343726/gcc-concepts-bugs repo && cd repo && ./run.sh"; fi
