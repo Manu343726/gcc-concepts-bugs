@@ -13,5 +13,5 @@ install:
   - if [[ $RUN_BUILD ]]; then docker pull manu343726/gcc-concepts; fi
 
 script:
-  - if [[ $RUN_BUILD ]]; then docker run manu343726/gcc-concepts /bin/sh -c "git clone https://github.com/Manu343726/gcc-concepts-bugs repo && cd repo && export CXX=$(which g++-concepts) && ./run.sh"; fi
+  - if [[ $RUN_BUILD ]]; then docker run manu343726/gcc-concepts /bin/bash -c "git clone https://github.com/Manu343726/gcc-concepts-bugs repo && cd repo && export CXX=$(which g++-concepts) && ./run.sh"; fi
 
