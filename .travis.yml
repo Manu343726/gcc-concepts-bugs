@@ -7,7 +7,7 @@ services:
 env:
   global:
     - COMMIT_MESSAGE="$(git log --format=%B --no-merges -n 1)"
-    - RUN_BUILD="\"${COMMIT_MESSAGE}\" =~ \"NO_TRAVIS\""
+    - RUN_BUILD='\"${COMMIT_MESSAGE}\" =~ \"NO_TRAVIS\"'
 
 install:
   - if [[ $RUN_BUILD ]]; then docker pull manu343726/gcc-concepts; fi
