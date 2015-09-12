@@ -1,12 +1,7 @@
-if [[ ! "$CXX" =~ "concepts" ]]; then 
-    echo "Please use GCC with Concepts TS support."
-    $CXX --version
-    exit 1
-fi
-
 mkdir build -p
 
 global_result=0
+CXX=g++-concepts
 
 for test_file in tests/*.cpp; do
     test=$(basename $test_file)
