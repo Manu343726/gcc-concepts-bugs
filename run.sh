@@ -2,8 +2,9 @@ mkdir build -p
 
 global_result=0
 CXX=g++-concepts
+SRC_FOLDER=src
 
-for test_file in tests/*.cpp; do
+for test_file in ${SRC_FOLDER}/*.cpp; do
     test=$(basename $test_file)
     comnd="$CXX -std=c++1z -lstdc++ -Wall -Werror -pedantic -O0 $test_file -o build/${test}.out -L/usr/local/lib/gcc/x86_64-pc-linux-gnu/lib64/"
     eval $comnd
