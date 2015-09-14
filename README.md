@@ -4,7 +4,7 @@ A repository to host C++ Concepts Lite TS examples, to help with GCC bug reporti
 
 ## Setup
 
-This repository builds C++ Concepts Lite TS examples on the cloud using Travis CI service, checking if those are compiled succesfully on GCC. The travis setup uses GCC trunk pointing to the [Concepts Lite TS support commit](https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=56c12fd4ba064759724236ad896232603b8797ed). That custom GCC is suppossed to be built once, then cached for next CI builds. Check the `.travis.yml` file for more details.
+This repository builds C++ Concepts Lite TS examples on the cloud using Travis CI service, checking if those are compiled succesfully on GCC. The travis setup uses GCC trunk pointing to the [latest `master` commit (2015-09-14)](https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=dd8691e6dce3ff5b64011a5df090a324f6bba45b). That custom GCC is built inside a docker image, and Travis is run under container infrastucture mode. Check the `.travis.yml` file for more details.
 
 ### Updating GCC
 
