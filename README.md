@@ -18,16 +18,17 @@ The idea behind this project is to host as many concepts lite examples as we can
 
 The examples are complete C++ programs (i.e. `.cpp` files with a `main()` function) located in `src/` folder. The `src/` folder has a `concepts/` subfolder designed to host and share concept definitions between examples.
 
-### Tagging examples
+### Setting up tests
 
-The `run.sh` script checks the filename of an example to know if the example was expected to be built successfully or not. There are four different tags:
+There's a `CMakeLists.txt` file under the `src/` directory where you can add tests via the `gcb_target()` function, which takes:
 
- - **`STD_CORRECT`**: The example is correct by the Standard and should be compiled successfully in any standard conformant compiler.
- - **`STD_INCORRECT`**: The example is incorrect and should be discarded by any Standard conformant compiler.
- - **`EXPECTED_CONFORMANT`**: The compiler is expected to be Standard conformant when building the example.
- - **`EXPECTED_NON_CONFORMANT`**: The compiler is expected to be non Standard conformant when building the example. The example may use compiler extensions, etc.
+ - `TARGET`: Target name.
+ - `SOURCES`: List of target sources (Relative to the `src/` directory).
+ - `INCLUDE_DIRECTORIES`: List of include directories (Relative to the `src/` directory).
+ - `COMPILE_OPTIONS`: List of compile options to build the test with.
+ - `EXPECTED_SUCCESS`/`EXPECTED_FAIL`: Whether the given program is expected to be built successfully. Note the purpose of this tests is not to test program behavior (i.e. runtime), but to check if are compiled successfully or not.
 
-As an use case, if we have an example file named `foo_STD_CORRECT_EXPECTED_CONFORMANT.cpp` that cannot be compiled successfully, the `foo` example may reflect a compiler bug that should be reported (See "*Reporting issues*" bellow). Also, an example tagged as Standard incorrect but non-conformant (Because you suspect of a bug or you are using an extension) that cannot be built may reflect the bug was fixed or a regresion was introduced.
+`gcb_target()` function instances a CTest test named `${TARGET}` which tries to build the test sources with the settings above and the current cmake C++ compiler. Test passes if compilation result matches `EXPECTED_XXX` as specified in the `gcb_target()` call.
 
 ### Reporting issues
 

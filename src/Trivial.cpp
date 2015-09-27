@@ -1,3 +1,10 @@
+/* DESCRIPTION: Check Trivial() concept (Yields true for any T)
+ * SOURCES: Trivial.cpp
+ * INCLUDE_DIRECTORIES: . ..
+ * COMPILE_OPTIONS: -std=c++1z -Wall
+ * RESULT: EXPECTED_FAIL
+ */
+
 #include "utils.hpp"
 #include "concepts/trivial.hpp"
 
