@@ -30,6 +30,28 @@ There's a `CMakeLists.txt` file under the `src/` directory where you can add tes
 
 `gcb_target()` function instances a CTest test named `${TARGET}` which tries to build the test sources with the settings above and the current cmake C++ compiler. Test passes if compilation result matches `EXPECTED_XXX` as specified in the `gcb_target()` call.
 
+By default the `CMakeLists.txt` file in `src/` scans for source files in that directory using the `add_directory_tests()` function, which GLOBs for `.cpp` files and for each one parses its contents searching for the variables above. So you can simply define a test as a unique `Foo.cpp` file like this:
+
+``` cpp
+/* DESCRIPTION: Tests the Foo concept against int type
+ * COMPILE_OPTIONS: -std=c++1z -Wall -Werror
+ * RESULT: EXPECTED_FAIL
+ */
+
+template<typename T>
+concept Foo() = requires(T t)
+{
+	t.foo() -> int
+};
+
+int main()
+{
+	[](Foo foo){}(int{})
+}
+```
+
+*Note `SOURCES` list is optional there (It's implicitly defined with the source file as only element). Anyway, you can place the name of this source file in the `SOURCES` list if you like.*
+
 ### Reporting issues
 
 As stated above, you can submit best practices examples, bad-code examples, or May Be A Bug examples. In the case you are submitting a bug example case (or something you think can be a bug) please open an issue here first to talk about it, let other people play with it, etc. Then open the correspondent bug tracking report and please link it in the issue.
