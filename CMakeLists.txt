@@ -22,7 +22,9 @@ function(gcb_target)
 		add_executable(__build_${ARG_TARGET} EXCLUDE_FROM_ALL ${ARG_SOURCES})
 		target_include_directories(__build_${ARG_TARGET} PRIVATE ${ARG_INCLUDE_DIRECTORIES})
 		target_compile_options(__build_${ARG_TARGET} PRIVATE ${ARG_COMPILE_OPTIONS})
-
+		
+		# See issue 1 https://github.com/Manu343726/gcc-concepts-bugs/issues/1
+		link_directories(/usr/local/lib/gcc/x86_64-pc-linux-gnu/lib64/)
 
 		set(command "${CMAKE_COMMAND} --build \".\" --target __build_${ARG_TARGET} --config ${CMAKE_BUILD_TYPE}")
 
