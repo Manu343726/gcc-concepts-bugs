@@ -24,7 +24,7 @@ concept bool RequiresClause() {
 		a == b;           // a == b is valid syntax (i.e. exists operator==(T,T))
 		{a == b} -> bool; // a == b is valid syntax and returns bool
 		a.f();            // T has f() member function
-		//f(a);             // there's a f(T) non-member function
+		f(a);             // there's a f(T) non-member function
 		//typename T::member_type;     // T has "member_type" member type
 		//T::template member_template; // T has "member_template" template
 		//{f(a)} -> UnaryConcept; // There's f(T) function and yields a type 
