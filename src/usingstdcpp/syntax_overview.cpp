@@ -53,6 +53,8 @@ int f(const PassesRequiresClauseExample&) {
 	return 0;
 }
 
+void g(RequiresClause) {};
+
 int main() {
-	[](RequiresClause){}(PassesRequiresClauseExample{});
+	[g(PassesRequiresClauseExample{});
 }
