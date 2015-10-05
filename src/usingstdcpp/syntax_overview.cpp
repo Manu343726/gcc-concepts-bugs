@@ -56,5 +56,5 @@ int f(const PassesRequiresClauseExample&) {
 void g(RequiresClause) {};
 
 int main() {
-	[g(PassesRequiresClauseExample{});
+	g(PassesRequiresClauseExample{});
 }
