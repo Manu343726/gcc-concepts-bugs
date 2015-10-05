@@ -27,9 +27,9 @@ concept bool RequiresClause() {
 		f(a);             // there's a f(T) non-member function
 		typename T::member_type;     // T has "member_type" member type
 		T::template member_template; // T has "member_template" template
-		{f(a)} -> UnaryConcept // There's f(T) function and yields a type 
+		{f(a)} -> UnaryConcept; // There's f(T) function and yields a type 
 		                       // that meets UnaryConcept concept
-	}
+	};
 }
 
 struct PassesRequiresClauseExample {
