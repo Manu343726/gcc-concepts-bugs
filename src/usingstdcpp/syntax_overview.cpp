@@ -26,7 +26,7 @@ concept bool RequiresClause() {
 		a.f();            // T has f() member function
 		f(a);             // there's a f(T) non-member function
 		typename T::member_type;     // T has "member_type" member type
-		template T::member_template; // T has "member_template" template
+		T::template member_template; // T has "member_template" template
 		{f(a)} -> UnaryConcept // There's f(T) function and yields a type 
 		                       // that meets UnaryConcept concept
 	}
