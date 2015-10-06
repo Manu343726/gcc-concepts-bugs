@@ -8,9 +8,9 @@ include(cmake/utils.cmake)
 option(GCB_TESTS_EXPLICIT_ONLY "Include only tests explicitly declared in CMakeLists.txt with gcb_target() calls, ignoring in-source declared tests" OFF)
 
 function(gcb_target)
-    cmake_parse_arguments(ARG 
-                          "EXPECTED_SUCCESS;EXPECTED_FAIL"
-                          "TARGET;DESC" 
+    cmake_parse_arguments(ARG
+                          "" # No options
+                          "TARGET;DESC;RESULT" 
                           "SOURCES;COMPILE_OPTIONS;INCLUDE_DIRECTORIES"
                           ${ARGN})
     if(TARGET __build_${ARG_TARGET})
@@ -28,12 +28,16 @@ function(gcb_target)
         if((NOT ARG_EXPECTED_SUCCESS) AND (NOT ARG_EXPECTED_FAIL))
             set(ARG_EXPECTED_SUCCESS TRUE) # Fallback to success if no result specified
         endif()
+        
+        if(NOT ARG_RESULT)
+            set(ARG_RESULT "SUCCESS")
+        endif()
 
-        if(ARG_EXPECTED_FAIL OR (NOT ARG_EXPECTED_SUCCESS))
+        if(ARG_RESULT MATCHES ".*FAIL.*")
             set(command "! ${command}")
-            set(RESULT "EXPECTED_FAIL")
+            set(RESULT "FAIL")
         else()
-            set(RESULT "EXPECTED_SUCCESS")
+            set(RESULT "SUCCESS")
         endif()
 
         # Just to pretty print
@@ -46,7 +50,7 @@ function(gcb_target)
         message("- Compile options: ${ARG_COMPILE_OPTIONS}")
         message("- Include directories: ${ARG_INCLUDE_DIRECTORIES}")
         message("- Compiler: ${CMAKE_CXX_COMPILER}")
-        message("- Result: ${RESULT}")
+        message("- Result: ${RESULT} (${ARG_RESULT})")
 
 
         add_test(NAME ${ARG_TARGET} COMMAND bash -c ${command} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -94,7 +98,7 @@ function(gcb_target_from_file FILE)
                    SOURCES "${SOURCES}" 
                    INCLUDE_DIRECTORIES "${INCLUDE_DIRECTORIES}"
                    COMPILE_OPTIONS "${COMPILE_OPTIONS}"
-                   ${RESULT})
+                   RESULT ${RESULT})
     else()
         message(FATAL_ERROR "File \"${FILE}\" does not exist")
     endif()
