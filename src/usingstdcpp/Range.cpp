@@ -1,6 +1,7 @@
 /*
  * COMPILE_OPTIONS: -std=c++1z
  * RESULT: FAILS__GCC_BUG_COMMIT_9cd04d8b99181eb10980d1c6a009c9ff31d20d40
+ * SKIP: TRUE
  */
 
 #include <type_traits>

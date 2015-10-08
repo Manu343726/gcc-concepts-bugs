@@ -11,27 +11,17 @@ function(gcb_target)
     cmake_parse_arguments(ARG
                           "" # No options
                           "TARGET;DESC;RESULT" 
-                          "SOURCES;COMPILE_OPTIONS;INCLUDE_DIRECTORIES"
+                          "SOURCES;COMPILE_OPTIONS;INCLUDE_DIRECTORIES;VARIANTS"
                           ${ARGN})
     if(TARGET __build_${ARG_TARGET})
         message("\"${ARG_TARGET}\" test already defined, this will be ignored")
     else()
         to_fullpath(ARG_SOURCES)
         to_fullpath(ARG_INCLUDE_DIRECTORIES)
-
-        add_executable(__build_${ARG_TARGET} EXCLUDE_FROM_ALL ${ARG_SOURCES})
-        target_include_directories(__build_${ARG_TARGET} PRIVATE ${ARG_INCLUDE_DIRECTORIES})
-        target_compile_options(__build_${ARG_TARGET} PRIVATE ${ARG_COMPILE_OPTIONS})
-
-        set(command "${CMAKE_COMMAND} --build \".\" --target __build_${ARG_TARGET} --config ${CMAKE_BUILD_TYPE}")
-
-        if((NOT ARG_EXPECTED_SUCCESS) AND (NOT ARG_EXPECTED_FAIL))
-            set(ARG_EXPECTED_SUCCESS TRUE) # Fallback to success if no result specified
-        endif()
         
-        if(NOT ARG_RESULT)
-            set(ARG_RESULT "SUCCESS")
-        endif()
+         if((NOT ARG_EXPECTED_SUCCESS) AND (NOT ARG_EXPECTED_FAIL))
+                set(ARG_EXPECTED_SUCCESS TRUE) # Fallback to success if no result specified
+         endif()
 
         if(ARG_RESULT MATCHES ".*FAIL.*")
             set(command "! ${command}")
@@ -40,6 +30,40 @@ function(gcb_target)
             set(RESULT "SUCCESS")
         endif()
 
+        if(NOT ARG_VARIANTS)
+            list(APPEND ARG_VARIANTS "DEFAULT")
+        endif()
+
+        foreach(VARIANT ${ARG_VARIANTS})
+            string(REGEX MATCH "(.*):(.*)" res "${VARIANT}")
+            if(res)
+                set(VARIANT "${CMAKE_MATCH_1}")
+                set(VARIANT_RESULT "${CMAKE_MATCH_2}")
+            else()
+                set(VARIANT_RESULT "${ARG_RESULT}")
+            endif()
+
+            add_executable(__build_${ARG_TARGET}_${VARIANT} EXCLUDE_FROM_ALL ${ARG_SOURCES})
+            target_include_directories(__build_${ARG_TARGET}_${VARIANT} PRIVATE ${ARG_INCLUDE_DIRECTORIES})
+            target_compile_options(__build_${ARG_TARGET}_${VARIANT} PRIVATE ${ARG_COMPILE_OPTIONS} -D${VARIANTS_DEFINITION_PREFIX}${VARIANT})
+            
+            set(command "${CMAKE_COMMAND} --build \".\" --target __build_${ARG_TARGET}_${VARIANT} --config ${CMAKE_BUILD_TYPE}")
+            
+            if(VARIANT_RESULT MATCHES ".*FAIL.*")
+                set(command "! ${command}")
+            endif()        
+
+            if(NOT TEST_COMMANDS)
+                set(TEST_COMMANDS "(${command})")
+            else()
+                set(TEST_COMMANDS "(${TEST_COMMANDS} && (echo \"Runing variant ${VARIANT}...\" && ${command}))")
+            endif()
+        endforeach()
+
+        if(NOT ARG_RESULT)
+            set(ARG_RESULT "SUCCESS")
+        endif()
+        
         # Just to pretty print
         to_space_list(ARG_SOURCES)
         to_space_list(ARG_INCLUDE_DIRECTORIES)
@@ -52,8 +76,9 @@ function(gcb_target)
         message("- Compiler: ${CMAKE_CXX_COMPILER}")
         message("- Result: ${RESULT} (${ARG_RESULT})")
 
-
-        add_test(NAME ${ARG_TARGET} COMMAND bash -c ${command} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+        message("Test commands: ${TEST_COMMANDS}")
+        
+        add_test(NAME ${ARG_TARGET} COMMAND bash -c "${TEST_COMMANDS}" WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     endif()
 endfunction()
 
@@ -79,11 +104,14 @@ function(gcb_target_from_file FILE)
             read_var("${line}" ".*INCLUDE_DIRECTORIES:(.*)" 1 INCLUDE_DIRECTORIES)
             read_var("${line}" ".*COMPILE_OPTIONS: (.*)" 1 COMPILE_OPTIONS)
             read_var("${line}" ".*RESULT: (.*)" 1 RESULT)
+            read_var("${line}" ".*VARIANTS: (.*)" 1 VARIANTS)
+            read_var("${line}" ".*SKIP: (.*)" 1 SKIP)
         endforeach()
         
         to_cmake_list(SOURCES)
         to_cmake_list(INCLUDE_DIRECTORIES)
         to_cmake_list(COMPILE_OPTIONS)
+        to_cmake_list(VARIANTS)
         
         get_filename_component(FILENAME "${FILE}" NAME)
         get_filename_component(TARGET_NAME "${FILE}" NAME_WE)
@@ -92,13 +120,16 @@ function(gcb_target_from_file FILE)
         if(INDEX LESS 0)
             list(INSERT SOURCES 0 ${FILENAME})
         endif()
-
-        gcb_target(TARGET ${TARGET_NAME}
-                   DESC "${DESCRIPTION}"
-                   SOURCES "${SOURCES}" 
-                   INCLUDE_DIRECTORIES "${INCLUDE_DIRECTORIES}"
-                   COMPILE_OPTIONS "${COMPILE_OPTIONS}"
-                   RESULT ${RESULT})
+        
+        if(NOT SKIP)
+            gcb_target(TARGET ${TARGET_NAME}
+                       DESC "${DESCRIPTION}"
+                       SOURCES "${SOURCES}" 
+                       INCLUDE_DIRECTORIES "${INCLUDE_DIRECTORIES}"
+                       COMPILE_OPTIONS "${COMPILE_OPTIONS}"
+                       RESULT ${RESULT}
+                       VARIANTS "${VARIANTS}")
+        endif()
     else()
         message(FATAL_ERROR "File \"${FILE}\" does not exist")
     endif()

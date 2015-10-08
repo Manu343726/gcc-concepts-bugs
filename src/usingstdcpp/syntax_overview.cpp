@@ -21,6 +21,7 @@ concept bool InvokingAnotherConcept = UnaryConcept<T>(); // You can evaluate oth
 template<typename T>
 concept bool RequiresClause() {
 	return requires(T a, T b) {
+                
 		a == b;           // a == b is valid syntax (i.e. exists operator==(T,T))
 		{a == b} -> bool; // a == b is valid syntax and returns bool
 		a.f();            // T has f() member function
