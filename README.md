@@ -27,7 +27,7 @@ There's a `CMakeLists.txt` file under the `src/` directory where you can add tes
  - `INCLUDE_DIRECTORIES`: List of include directories (Relative to the `src/` directory).
  - `COMPILE_OPTIONS`: List of compile options to build the test with.
  - `EXPECTED_SUCCESS`/`EXPECTED_FAIL`: Whether the given program is expected to be built successfully. Note the purpose of this tests is not to test program behavior (i.e. runtime), but to check if are compiled successfully or not.
- - 'VARIANTS`: List of variants (See *variants* bellow).
+ - `VARIANTS`: List of variants (See *variants* bellow).
 
 `gcb_target()` function instances a CTest test named `${TARGET}` which tries to build the test sources with the settings above and the current cmake C++ compiler. Test passes if compilation result matches `EXPECTED_XXX` as specified in the `gcb_target()` call.
 
