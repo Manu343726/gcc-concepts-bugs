@@ -100,7 +100,7 @@ int main()
 }
 ```
 
-*To avoid name conflicts with other symbols, you can set `VARIANT_DEFINITION_PREFIX` variable:
+*To avoid name conflicts with other symbols, you can set `VARIANT_DEFINITION_PREFIX` variable:*
 
 ``` cpp
 /*
