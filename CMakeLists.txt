@@ -52,8 +52,8 @@ function(gcb_target)
             endif()
 
             add_executable(__build_${ARG_TARGET}_${VARIANT} EXCLUDE_FROM_ALL ${${VARIANT}_SOURCES})
-            target_include_directories(__build_${ARG_TARGET}_${VARIANT} PRIVATE ${${VARIANT}_INCLUDE_DIRECTORIES})
-            target_compile_options(__build_${ARG_TARGET}_${VARIANT} PRIVATE ${${VARIANT}_COMPILE_OPTIONS} -D${ARG_VARIANT_DEFINITION_PREFIX}${VARIANT})
+            target_include_directories(__build_${ARG_TARGET}_${VARIANT} PRIVATE ${${VARIANT}_INCLUDE_DIRECTORIES} ${CMAKE_SOURCE_DIR})
+            target_compile_options(__build_${ARG_TARGET}_${VARIANT} PRIVATE ${${VARIANT}_COMPILE_OPTIONS} -D${ARG_VARIANT_DEFINITION_PREFIX}${VARIANT} -std=c++1z)
             
             set(command "${CMAKE_COMMAND} --build \".\" --target __build_${ARG_TARGET}_${VARIANT} --config ${CMAKE_BUILD_TYPE}")
             
